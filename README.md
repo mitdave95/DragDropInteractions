@@ -1,3 +1,30 @@
+Drag and Drop Selection Concept
+========
+
+Inspiration taken from [Codrops](http://tympanus.net/codrops/?p=21275)
+
+Additional use of jQuery
+
+Usage
+=========
+
+Currently only works with index page
+
+Open using and web engine as it uses AJAX requests.
+Calculates number of images in folder (img/dataSet).
+Adds it on runtime.
+Drag and drop image in the bottom bar.
+Click on the "Click to get Array in Console" link to get array in console.
+
+It can be used for Image or Video Selection in forms or anyway you find it useful.
+
+Use any server-side language to control number of selection by just ruunning the loop.
+
+To-Do List:
+=========
+
+Add samples for all the pages.
+
 Drag and Drop Interaction Ideas
 =========
 

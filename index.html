@@ -34,20 +34,12 @@
 						<a href="bottom-slide.html">Bottom Slide</a>
 						<a href="reveal.html">Reveal</a>
 					</nav>
+					<br>
+					<nav>
+						<a class="current-demo" onclick="getImageArray()"><i class="fa fa-fw fa-th-list"></i> Click to get Array in Console</a>
+					</nav>
 				</header>
 				<div id="grid" class="grid clearfix">
-					<div class="grid__item"><i class="fa fa-fw fa-image"></i></div>
-					<div class="grid__item"><i class="fa fa-fw fa-image"></i></div>
-					<div class="grid__item"><i class="fa fa-fw fa-image"></i></div>
-					<div class="grid__item"><i class="fa fa-fw fa-image"></i></div>
-					<div class="grid__item"><i class="fa fa-fw fa-image"></i></div>
-					<div class="grid__item"><i class="fa fa-fw fa-image"></i></div>
-					<div class="grid__item"><i class="fa fa-fw fa-image"></i></div>
-					<div class="grid__item"><i class="fa fa-fw fa-image"></i></div>
-					<div class="grid__item"><i class="fa fa-fw fa-image"></i></div>
-					<div class="grid__item"><i class="fa fa-fw fa-image"></i></div>
-					<div class="grid__item"><i class="fa fa-fw fa-image"></i></div>
-					<div class="grid__item"><i class="fa fa-fw fa-image"></i></div>
 				</div>
 				<!-- Related demos -->
 				<section class="related">
@@ -65,17 +57,20 @@
 		</div><!-- /container -->
 		<div id="drop-area" class="drop-area">
 			<div>
-				<div class="drop-area__item"><div class="dummy"></div></div>
-				<div class="drop-area__item"><div class="dummy"></div></div>
-				<div class="drop-area__item"><div class="dummy"></div></div>
-				<div class="drop-area__item"><div class="dummy"></div></div>
+				<div class="drop-area__item" id="firstImg"></div>
+				<div class="drop-area__item" id="secondImg"></div>
+				<div class="drop-area__item" id="thirdImg"></div>
+				<div class="drop-area__item" id="forthImg"></div>
 			</div>
 		</div>
 		<div class="drop-overlay"></div>
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 		<script src="js/draggabilly.pkgd.min.js"></script>
 		<script src="js/dragdrop.js"></script>
 		<script>
-			(function() {
+			var imageArray = new Array()
+			function dragEnable(){
+				(function () {
 				var body = document.body,
 					dropArea = document.getElementById( 'drop-area' ),
 					droppableArr = [], dropAreaTimeout;
@@ -84,13 +79,12 @@
 				[].slice.call( document.querySelectorAll( '#drop-area .drop-area__item' )).forEach( function( el ) {
 					droppableArr.push( new Droppable( el, {
 						onDrop : function( instance, draggableEl ) {
+							var currentImgTag = $(draggableEl).children()[0]
+							var currentImgId = $(currentImgTag).attr("id")
 							// show checkmark inside the droppabe element
 							classie.add( instance.el, 'drop-feedback' );
-							clearTimeout( instance.checkmarkTimeout );
-							instance.checkmarkTimeout = setTimeout( function() { 
-								classie.remove( instance.el, 'drop-feedback' );
-							}, 800 );
-							// ...
+							$(instance.el).css({"background":"url(img/dataSet/" + currentImgId + ")","background-position":"center","background-size":"cover"})
+							imageArray.push(currentImgId)
 						}
 					} ) );
 				} );
@@ -100,33 +94,73 @@
 					new Draggable( el, droppableArr, {
 						draggabilly : { containment: document.body },
 						onStart : function() {
-							// add class 'drag-active' to body
-							classie.add( body, 'drag-active' );
-							// clear timeout: dropAreaTimeout (toggle drop area)
-							clearTimeout( dropAreaTimeout );
-							// show dropArea
-							classie.add( dropArea, 'show' );
+							classie.add( body, 'drag-active' )
+							clearTimeout( dropAreaTimeout )
+							classie.add( dropArea, 'show' )
 						},
 						onEnd : function( wasDropped ) {
 							var afterDropFn = function() {
-								// hide dropArea
-								classie.remove( dropArea, 'show' );
-								// remove class 'drag-active' from body
-								classie.remove( body, 'drag-active' );
+								classie.remove( dropArea, 'show' )
+								classie.remove( body, 'drag-active' )
 							};
 
 							if( !wasDropped ) {
-								afterDropFn();
+								afterDropFn()
 							}
 							else {
-								// after some time hide drop area and remove class 'drag-active' from body
-								clearTimeout( dropAreaTimeout );
-								dropAreaTimeout = setTimeout( afterDropFn, 400 );
+								clearTimeout( dropAreaTimeout )
+								dropAreaTimeout = setTimeout( afterDropFn, 400 )
 							}
 						}
 					} );
 				} );
-			})();
+			})()}
+		</script>
+
+		<script type="text/javascript">
+			var fileNames = new Array()
+			$.ajax({
+				url: "img/dataSet",
+				success: function(data) {
+					$(data).find("td > a").each(function(){
+						if(openFile($(this).attr("href"))){
+							fileNames.push($(this).attr("href"))
+						}           
+					});
+					//console.log(fileNames)
+
+					function openFile(file) {
+						var extension = file.substr( (file.lastIndexOf('.') +1) )
+						switch(extension) {
+							case 'jpg':
+							case 'png':
+							case 'gif':
+							case 'pdf':
+								return true;
+								break;
+							default:
+								return false;
+						}
+					}
+
+					$.each( fileNames, function( index, value ) {
+						$( ".grid" ).append( '<div class="grid__item"><img id="' + value + '" class="grid__img" src="img/dataSet/' + value + '"/>')
+					})
+					dragEnable()
+				}
+			})
+		</script>
+		<script type="text/javascript">
+			function getImageArray() {
+				console.log("Original Array Length: " + imageArray.length)
+				console.log(imageArray)
+				var uniqueImageArray = new Array()
+				$.each(imageArray, function(i, el) {
+				 	if($.inArray(el, uniqueImageArray) === -1) uniqueImageArray.push(el);
+				});
+				console.log("Unique Image Array Length: " + uniqueImageArray.length)
+				console.log(uniqueImageArray)
+				}
 		</script>
 	</body>
 </html>

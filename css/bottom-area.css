@@ -4,11 +4,16 @@
 	padding: 0 1em;
 }
 
+.grid__img {
+	width: inherit;
+	height: inherit;
+	border-radius: 4px;
+}
+
 .grid__item {
 	font-size: 2em;
 	display: inline-block;
 	margin: 0.2em 0.1em;
-	padding-top: 2.25em;
 	width: 5.5em;
 	height: 5.5em;
 	border-radius: 4px;
@@ -133,7 +138,7 @@
 }
 
 .drop-area__item::after {
-	color: rgba(255,253,197,0.6);
+	color: rgba(253, 25, 2, 0.55);
 	content: '\f00c';
 	font-size: 3em;
 	margin-top: -0.5em;
